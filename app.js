@@ -1,6 +1,7 @@
 // app.js
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
+// const path = require('path');
 
 let BASE_CONFIG = {
   openUrl: "http://192.168.3.33:8899/Online/ShowLayout/1",
@@ -19,13 +20,41 @@ function findChromeOrEdge() {
   }
   return null;
 }
+//  const utilsCode = fs.readFileSync(path.resolve(__dirname, './trajectory-animation.js'), 'utf8');
+//  const initScriptStr = `
+//  (() => {
+//    if (window.__TRAJECTORY_LOADED__) return;
+//    window.__TRAJECTORY_LOADED__ = true;
+ 
+//    const injectScript = () => {
+//      if (!document.head) {
+//        // 继续等待 head 出现
+//        setTimeout(injectScript, 30);
+//        return;
+//      }
+ 
+//      const script = document.createElement('script');
+//      script.textContent = ${JSON.stringify(utilsCode)};
+//      document.head.appendChild(script);
+//    };
+ 
+//    // 确保在 DOM 可用后才尝试注入
+//    if (document.readyState === 'loading') {
+//      document.addEventListener('DOMContentLoaded', injectScript);
+//    } else {
+//      injectScript();
+//    }
+//  })();
+//  `;
+
 
 // ✅ 关键：使用字符串而不是函数！
 const initScriptStr = `
 (() => {
   if (window.__TRAJECTORY_LOADED__) return;
   window.__TRAJECTORY_LOADED__ = true;
-
+  
+ 
   const loadScript = () => {
     if (!document.head) {
       setTimeout(loadScript, 30);
@@ -33,7 +62,7 @@ const initScriptStr = `
     }
 
     const script = document.createElement('script');
-    script.src = "https://fastly.jsdelivr.net/gh/yw738/static/trajectory-animation.js";
+    script.src = "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/trajectory-animation2.js";
     script.async = true;
     script.onload = () => {
       console.log('[注入成功] 轨迹动画已加载');
@@ -51,6 +80,7 @@ const initScriptStr = `
   } else {
     loadScript();
   }
+  
 })();
 `;
 
