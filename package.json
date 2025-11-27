@@ -1,0 +1,21 @@
+{
+    "name": "trajectory-runner",
+    "version": "1.0.0",
+    "description": "轨迹动画自动加载工具",
+    "main": "app.js",
+    "bin": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "build": "pkg app.js --target=node16 --platform=win"
+    },
+    "dependencies": {
+        "puppeteer-core": "^22.0.0"
+    },
+    "pkg": {
+        "assets": [],
+        "outputPath": "dist"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
