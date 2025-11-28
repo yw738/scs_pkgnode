@@ -110,18 +110,42 @@
 
     // 轨迹点数据
     const points = [
-      { x: 900, y: 2053 }, { x: 900, y: 1982 }, { x: 1231, y: 1982 },
-      { x: 1231, y: 1800 }, { x: 1400, y: 1800 }, { x: 1400, y: 1978 },
-      { x: 3343, y: 1978 }, { x: 3343, y: 1510 }, { x: 3445, y: 1510 },
-      { x: 3445, y: 361 }, { x: 979, y: 361 }, { x: 979, y: 451 },
-      { x: 847, y: 451 }, { x: 847, y: 235 }, { x: 817, y: 235 },
-      { x: 817, y: 682 }, { x: 733, y: 682 }, { x: 733, y: 811 },
-      { x: 616, y: 811 }, { x: 616, y: 1000 }, { x: 541, y: 1000 },
-      { x: 541, y: 511 }, { x: 97, y: 511 }, { x: 97, y: 649 },
-      { x: 409, y: 649 }, { x: 409, y: 541 }, { x: 511, y: 541 },
-      { x: 511, y: 1468 }, { x: 934, y: 1468 }, { x: 934, y: 710 },
-      { x: 1384, y: 710 }, { x: 1384, y: 1775 }, { x: 1200, y: 1775 },
-      { x: 1200, y: 1940 }, { x: 876, y: 1940 }, { x: 876, y: 2053 }
+      { x: 900, y: 2053 },
+      { x: 900, y: 1982 },
+      { x: 1231, y: 1982 },
+      { x: 1231, y: 1800 },
+      { x: 1400, y: 1800 },
+      { x: 1400, y: 1978 },
+      { x: 3343, y: 1978 },
+      { x: 3343, y: 1510 },
+      { x: 3445, y: 1510 },
+      { x: 3445, y: 361 },
+      { x: 979, y: 361 },
+      { x: 979, y: 451 },
+      { x: 847, y: 451 },
+      { x: 847, y: 235 },
+      { x: 817, y: 235 },
+      { x: 817, y: 682 },
+      { x: 733, y: 682 },
+      { x: 733, y: 811 },
+      { x: 616, y: 811 },
+      { x: 616, y: 1000 },
+      { x: 541, y: 1000 },
+      { x: 541, y: 511 },
+      { x: 97, y: 511 },
+      { x: 97, y: 649 },
+      { x: 409, y: 649 },
+      { x: 409, y: 541 },
+      { x: 511, y: 541 },
+      { x: 511, y: 1468 },
+      { x: 934, y: 1468 },
+      { x: 934, y: 710 },
+      { x: 1384, y: 710 },
+      { x: 1384, y: 1775 },
+      { x: 1200, y: 1775 },
+      { x: 1200, y: 1940 },
+      { x: 876, y: 1940 },
+      { x: 876, y: 2053 },
     ];
 
     // 工具函数
@@ -201,15 +225,21 @@
     const visitorSize = 64;
 
     // --------- 多参观者设置 ---------
-    const visitorUrl = "https://fastly.jsdelivr.net/gh/yw738/static/visitor.svg";
+    const visitorUrl =
+      "https://fastly.jsdelivr.net/gh/yw738/static/visitor.svg";
+
     const visitors = [
       { img: new Image(), progress: 0, speed: 2 },
       { img: new Image(), progress: 300, speed: 1.5 },
       { img: new Image(), progress: 600, speed: 2.5 },
       { img: new Image(), progress: 900, speed: 3 },
-      { img: new Image(), progress: 1200, speed: 2.2 }
+      { img: new Image(), progress: 1200, speed: 2.2 },
     ];
-    visitors.forEach(v => v.img.src = visitorUrl);
+    let visitorUrls = [
+      visitorUrl,
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user2.png",
+    ];
+    visitors.forEach((v, i) => (v.img.src = visitorUrls[i] || visitorUrl));
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -220,7 +250,7 @@
       }
 
       // 绘制所有参观者
-      visitors.forEach(v => {
+      visitors.forEach((v) => {
         const pos = getPointAtProgress(v.progress);
         if (v.img.complete) {
           ctx.drawImage(
@@ -239,11 +269,15 @@
     }
 
     // 等图片加载完成后开始动画
-    const allLoaded = visitors.map(v => v.img);
+    const allLoaded = visitors.map((v) => v.img);
     let loadedCount = 0;
-    allLoaded.forEach(img => {
+    allLoaded.forEach((img) => {
       if (img.complete) loadedCount++;
-      else img.onload = () => { loadedCount++; if (loadedCount === allLoaded.length) draw(); };
+      else
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === allLoaded.length) draw();
+        };
     });
     if (loadedCount === allLoaded.length) draw();
   }
