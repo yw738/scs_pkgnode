@@ -75,34 +75,34 @@
 //   }
 // })();
 // 隐藏滚动条但保留滚动功能
-(function hideScrollbarButAllowScrolling() {
-  // 创建 <style> 元素
-  const style = document.createElement("style");
-  style.textContent = `
-    /* 隐藏滚动条 - Webkit 浏览器 (Chrome, Safari, Edge) */
-    html::-webkit-scrollbar {
-      display: none;
-    }
+// (function hideScrollbarButAllowScrolling() {
+//   // 创建 <style> 元素
+//   const style = document.createElement("style");
+//   style.textContent = `
+//     /* 隐藏滚动条 - Webkit 浏览器 (Chrome, Safari, Edge) */
+//     html::-webkit-scrollbar {
+//       display: none;
+//     }
 
-    /* Firefox */
-    html {
-      scrollbar-width: none; /* 'none' 表示无滚动条 */
-    }
+//     /* Firefox */
+//     html {
+//       scrollbar-width: none; /* 'none' 表示无滚动条 */
+//     }
 
-    /* IE/旧版 Edge */
-    html {
-      -ms-overflow-style: none;
-    }
+//     /* IE/旧版 Edge */
+//     html {
+//       -ms-overflow-style: none;
+//     }
 
-    /* 确保页面仍可滚动 */
-    html {
-      overflow: auto;
-    }
-  `;
+//     /* 确保页面仍可滚动 */
+//     html {
+//       overflow: auto;
+//     }
+//   `;
 
-  // 将样式插入到 <head> 中
-  document.head.appendChild(style);
-})();
+//   // 将样式插入到 <head> 中
+//   document.head.appendChild(style);
+// })();
 (function () {
   // 等待 DOM 加载完成
   if (document.readyState === "loading") {
@@ -265,18 +265,30 @@
       "https://fastly.jsdelivr.net/gh/yw738/static/visitor.svg";
 
     const visitors = [
-      { img: new Image(), progress: 0, speed: 2 },
-      { img: new Image(), progress: 300, speed: 1.5 },
-      { img: new Image(), progress: 600, speed: 2.5 },
-      { img: new Image(), progress: 900, speed: 3 },
-      { img: new Image(), progress: 1200, speed: 2.2 },
+      { img: new Image(), progress: 0, speed: 2.5 },
+      { img: new Image(), progress: 1000, speed: 2.5 },
+      { img: new Image(), progress: 2000, speed: 2.5 },
+
+      { img: new Image(), progress: 3000, speed: 2.5 },
+      { img: new Image(), progress: 4000, speed: 2.2 },
+
+      { img: new Image(), progress: 5000, speed: 2.5 },
+      { img: new Image(), progress: 7000, speed: 2.2 },
+      { img: new Image(), progress: 9000, speed: 2.2 },
+      { img: new Image(), progress: 11000, speed: 2.2 },
+      { img: new Image(), progress: 13000, speed: 2.2 },
     ];
     let visitorUrls = [
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user00.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user001.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user002.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user003.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user004.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0001.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0002.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0003.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0004.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0005.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0006.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0007.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0008.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0009.png",
     ];
     visitors.forEach((v, i) => (v.img.src = visitorUrls[i] || visitorUrl));
 
