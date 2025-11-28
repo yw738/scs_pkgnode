@@ -238,7 +238,7 @@
     let visitorUrls = [
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user05.png",
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user1.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user001.png",
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user2.png",
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user03.png",
     ];
