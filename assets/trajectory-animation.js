@@ -75,34 +75,34 @@
 //   }
 // })();
 // 隐藏滚动条但保留滚动功能
-// (function hideScrollbarButAllowScrolling() {
-//   // 创建 <style> 元素
-//   const style = document.createElement("style");
-//   style.textContent = `
-//     /* 隐藏滚动条 - Webkit 浏览器 (Chrome, Safari, Edge) */
-//     html::-webkit-scrollbar {
-//       display: none;
-//     }
+(function hideScrollbarButAllowScrolling() {
+  // 创建 <style> 元素
+  const style = document.createElement("style");
+  style.textContent = `
+    /* 隐藏滚动条 - Webkit 浏览器 (Chrome, Safari, Edge) */
+    html::-webkit-scrollbar {
+      display: none;
+    }
 
-//     /* Firefox */
-//     html {
-//       scrollbar-width: none; /* 'none' 表示无滚动条 */
-//     }
+    /* Firefox */
+    html {
+      scrollbar-width: none; /* 'none' 表示无滚动条 */
+    }
 
-//     /* IE/旧版 Edge */
-//     html {
-//       -ms-overflow-style: none;
-//     }
+    /* IE/旧版 Edge */
+    html {
+      -ms-overflow-style: none;
+    }
 
-//     /* 确保页面仍可滚动 */
-//     html {
-//       overflow: auto;
-//     }
-//   `;
+    /* 确保页面仍可滚动 */
+    html {
+      overflow: auto;
+    }
+  `;
 
-//   // 将样式插入到 <head> 中
-//   document.head.appendChild(style);
-// })();
+  // 将样式插入到 <head> 中
+  document.head.appendChild(style);
+})();
 (function () {
   // 等待 DOM 加载完成
   if (document.readyState === "loading") {
