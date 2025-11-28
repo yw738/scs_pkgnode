@@ -29,13 +29,16 @@ function findChromeOrEdge() {
 }
 
 // 🔥 关键：兼容 pkg 和开发环境
-const basePath = process.pkg ? path.dirname(process.execPath) : __dirname;
+// 运行：process.cwd() → exe 所在目录
+const rootDir = process.pkg
+  ? path.dirname(process.execPath)
+  : __dirname;
 
-const utilsCode = fs.readFileSync(
-  path.join(basePath, "trajectory-animation.js"),
-  "utf8"
-);
-
+// assets 文件夹
+const assetDir = path.join(rootDir, "assets");
+const utilsPath = path.join(assetDir, "trajectory-animation.js");
+const utilsCode = fs.readFileSync(utilsPath, "utf8");
+ 
 const initScriptStr = `
  (() => {
    if (window.__TRAJECTORY_LOADED__) return;

@@ -13,7 +13,7 @@
         "puppeteer-core": "^22.0.0"
     },
     "pkg": {
-        "assets": ["trajectory-animation.js"],
+        "assets": ["./trajectory-animation.js"],
         "outputPath": "dist"
     },
     "keywords": [],
