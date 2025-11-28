@@ -236,11 +236,11 @@
       { img: new Image(), progress: 1200, speed: 2.2 },
     ];
     let visitorUrls = [
-      visitorUrl,
-      visitorUrl,
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user05.png",
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0.png",
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user1.png",
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user2.png",
+      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user03.png",
     ];
     visitors.forEach((v, i) => (v.img.src = visitorUrls[i] || visitorUrl));
 
