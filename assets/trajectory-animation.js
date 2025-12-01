@@ -138,13 +138,14 @@
 
     // 轨迹点数据
     const points = [
-      { x: 900, y: 2053 }, //更衣
-      { x: 900, y: 1982 },
+      // { x: 900, y: 2053 }, //更衣
+      // { x: 900, y: 1940 },
       { x: 1231, y: 1982 },
-      { x: 1231, y: 1800 },
-      { x: 1400, y: 1800 },
 
-      { x: 1400, y: 1978 }, // 产线1
+      { x: 1231, y: 1813 },
+      { x: 1384, y: 1813 },
+
+      { x: 1384, y: 1978 }, // 产线1
       { x: 3343, y: 1978 },
       { x: 3343, y: 1510 },
       { x: 3445, y: 1510 },
@@ -176,12 +177,12 @@
 
       { x: 934, y: 710 }, // 电子料
       { x: 1384, y: 710 },
-      { x: 1384, y: 1775 },
+      { x: 1384, y: 1760 },
 
-      { x: 1200, y: 1775 }, // 回来
-      { x: 1200, y: 1940 },
-      { x: 876, y: 1940 },
-      { x: 876, y: 2053 },
+      { x: 1163, y: 1760 }, // 回来
+      { x: 1163, y: 1950 },
+      // { x: 876, y: 1760 },
+      // { x: 876, y: 2053 },
     ];
 
     // 工具函数
@@ -265,14 +266,14 @@
       "https://fastly.jsdelivr.net/gh/yw738/static/visitor.svg";
 
     const visitors = [
-      { img: new Image(), progress: 0, speed: 2.5 },
-      { img: new Image(), progress: 1000, speed: 2.5 },
-      { img: new Image(), progress: 2000, speed: 2.5 },
+      { img: new Image(), progress: 0, speed: 2.2 },
+      { img: new Image(), progress: 1000, speed: 2.2 },
+      { img: new Image(), progress: 2000, speed: 2.2 },
 
-      { img: new Image(), progress: 3000, speed: 2.5 },
+      { img: new Image(), progress: 3000, speed: 2.2 },
       { img: new Image(), progress: 4000, speed: 2.2 },
 
-      { img: new Image(), progress: 5000, speed: 2.5 },
+      { img: new Image(), progress: 5000, speed: 2.2 },
       { img: new Image(), progress: 7000, speed: 2.2 },
       { img: new Image(), progress: 9000, speed: 2.2 },
       { img: new Image(), progress: 11000, speed: 2.2 },
@@ -291,10 +292,44 @@
       "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0009.png",
     ];
     visitors.forEach((v, i) => (v.img.src = visitorUrls[i] || visitorUrl));
+    // 在轨迹起点与终点标注
+    function drawStartEndLabels() {
+      const start = points[0];
+      const end = points[points.length - 1];
 
+      ctx.font = "22px Arial";
+      ctx.fillStyle = "#FEF919";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const startOffset = { x: 0, y: 40 }; // ← 开始点偏移
+      const endOffset = { x: 0, y: 40 }; // ← 结束点偏移
+      // 开始点
+      ctx.beginPath();
+      ctx.arc(
+        start.x + startOffset.x,
+        start.y + startOffset.y,
+        30,
+        0,
+        Math.PI * 2
+      );
+      ctx.fillStyle = "rgba(0, 255, 0, 0.6)";
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.fillText("开始", start.x + startOffset.x, start.y + startOffset.y);
+
+
+      // 结束点
+      ctx.beginPath();
+      ctx.arc(end.x + endOffset.x, end.y + endOffset.y, 30, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 0, 0, 0.6)";
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.fillText("结束", end.x + endOffset.x, end.y + endOffset.y);
+
+    }
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+      drawStartEndLabels(); // ← 在这里调用（新增）
       // 绘制所有轨迹线段
       for (let i = 0; i < points.length - 1; i++) {
         drawSegmentWithArrow(points[i], points[i + 1]);
