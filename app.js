@@ -5,7 +5,7 @@ const path = require("path");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 let BASE_CONFIG = {
-  openUrl: "http://192.168.3.33:8899/Online/ShowLayout/1",
+  openUrl: "http://192.168.3.40:8899/Online/ShowLayout/1",
 };
 
 function findChromeOrEdge() {
