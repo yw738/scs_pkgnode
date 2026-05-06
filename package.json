@@ -6,14 +6,19 @@
     "bin": "app.js",
     "scripts": {
         "start": "node app.js",
-        "build": "pkg app.js --targets node18-win-x64 --output dist/app.exe"
+        "build": "npx pkg app.js --targets node18-win-x64 --output dist/app.exe"
         
     },
     "dependencies": {
         "puppeteer-core": "^22.0.0"
     },
+    "devDependencies": {
+        "pkg": "^5.8.1"
+    },
     "pkg": {
-        "assets": ["./trajectory-animation.js"],
+        "assets": [
+            "assets/**/*"
+        ],
         "outputPath": "dist"
     },
     "keywords": [],

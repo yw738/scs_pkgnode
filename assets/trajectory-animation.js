@@ -279,17 +279,29 @@
       { img: new Image(), progress: 11000, speed: 2.2 },
       { img: new Image(), progress: 13000, speed: 2.2 },
     ];
+    const apiHost = window.__PKGNODE_LAN_IPV4__ || "127.0.0.1";
+    const BASEURL = `http://${apiHost}:7070/api`;
     let visitorUrls = [
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user00.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0001.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0002.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0003.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0004.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0005.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0006.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0007.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0008.png",
-      "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0009.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user00.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0001.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0002.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0003.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0004.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0005.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0006.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0007.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0008.png",
+      // "https://fastly.jsdelivr.net/gh/yw738/scs_pkgnode/img/user0009.png",
+      `${BASEURL}/img/user00.png`,
+      `${BASEURL}/img/user0001.png`,
+      `${BASEURL}/img/user0002.png`,
+      `${BASEURL}/img/user0003.png`,
+      `${BASEURL}/img/user0004.png`,
+      `${BASEURL}/img/user0005.png`,
+      `${BASEURL}/img/user0006.png`,
+      `${BASEURL}/img/user0007.png`,
+      `${BASEURL}/img/user0008.png`,
+      `${BASEURL}/img/user0009.png`,
     ];
     visitors.forEach((v, i) => (v.img.src = visitorUrls[i] || visitorUrl));
     // 在轨迹起点与终点标注
