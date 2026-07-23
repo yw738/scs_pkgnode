@@ -7,13 +7,44 @@ const os = require("os");
 const { URL } = require("url");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
-let BASE_CONFIG = {
+
+/** 内置默认值；运行时优先读 exe/脚本同目录 config.json */
+const DEFAULT_CONFIG = {
   openUrl: "http://192.168.3.40:8899/Online/ShowLayout/1",
   /** 本地静态资源端口，0 表示不启动 */
   staticPort: 7070,
   /** 0.0.0.0 = 所有网卡，局域网可用本机 IP 访问；仅本机则用 127.0.0.1 */
   staticHost: "0.0.0.0",
 };
+
+// 🔥 兼容 pkg 和开发环境：运行目录 = exe 所在目录 或 项目根目录
+const rootDir = process.pkg
+  ? path.dirname(process.execPath)
+  : __dirname;
+
+/**
+ * @param {string} baseDir
+ * @returns {typeof DEFAULT_CONFIG}
+ */
+function loadConfig(baseDir) {
+  const configPath = path.join(baseDir, "config.json");
+  if (!fs.existsSync(configPath)) {
+    console.log(
+      `📄 未找到 config.json，使用内置默认配置（可在 ${configPath} 创建）`
+    );
+    return { ...DEFAULT_CONFIG };
+  }
+  try {
+    const fileConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    console.log(`📄 已加载配置: ${configPath}`);
+    return { ...DEFAULT_CONFIG, ...fileConfig };
+  } catch (e) {
+    console.warn(`⚠️ config.json 解析失败，使用内置默认配置: ${e.message}`);
+    return { ...DEFAULT_CONFIG };
+  }
+}
+
+const BASE_CONFIG = loadConfig(rootDir);
 
 function listLanIpv4() {
   const out = [];
@@ -217,12 +248,6 @@ function findChromeOrEdge() {
   }
   return null;
 }
-
-// 🔥 关键：兼容 pkg 和开发环境
-// 运行：process.cwd() → exe 所在目录
-const rootDir = process.pkg
-  ? path.dirname(process.execPath)
-  : __dirname;
 
 // assets、img 文件夹（与 exe 同级，便于 pkg 外挂资源）
 const assetDir = path.join(rootDir, "assets");
