@@ -335,6 +335,119 @@ const initScriptStr = `
 // })();
 // `;
 
+const STARTUP_LOG_PATH = path.join(rootDir, "startup-error.log");
+
+/** 启动异常落盘（pkg 双击运行时控制台可能看不到，便于现场取证） */
+function logStartupError(...parts) {
+  try {
+    fs.appendFileSync(
+      STARTUP_LOG_PATH,
+      `[${new Date().toISOString()}] ${parts.join("\n")}\n`
+    );
+  } catch {
+    // 日志写不了不要影响主流程
+  }
+}
+
+/**
+ * 分级降级启动浏览器：现场机器差异大（安全软件拦截、浏览器版本/策略、无交互会话），
+ * 单次启动失败不应直接导致大屏打不开。
+ * @param {string} executablePath
+ * @returns {Promise<import("puppeteer-core").Browser>}
+ */
+async function launchBrowser(executablePath) {
+  const baseArgs = [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-infobars",
+    "--start-maximized",
+    "--disable-web-security", // 可选：绕过 CORS（仅开发用）
+    "--disable-features=EnableEphemeralFlashPermission", // 避免某些弹窗
+  ];
+
+  /** 从「信息最全」到「最小可用」依次尝试 */
+  const attempts = [
+    {
+      name: "标准（去自动化横条）",
+      options: {
+        executablePath,
+        headless: false,
+        // 关键：移除 Puppeteer 默认注入的 --enable-automation，否则 Chrome 顶部会显示「正受到自动测试软件的控制」
+        ignoreDefaultArgs: ["--enable-automation"],
+        args: [...baseArgs, "--disable-blink-features=AutomationControlled"],
+      },
+    },
+    {
+      name: "回退（不改 Puppeteer 默认参数）",
+      options: { executablePath, headless: false, args: baseArgs },
+    },
+    {
+      name: "最小参数",
+      options: {
+        executablePath,
+        headless: false,
+        args: ["--no-sandbox", "--start-maximized"],
+      },
+    },
+  ];
+
+  /** @type {string[]} */
+  const errors = [];
+  for (const attempt of attempts) {
+    try {
+      const browser = await puppeteer.launch(attempt.options);
+      if (errors.length) {
+        console.warn(
+          `⚠️ 已降级到「${attempt.name}」启动成功，前序失败原因:\n${errors.join("\n")}`
+        );
+        logStartupError("降级启动成功", `采用: ${attempt.name}`, ...errors);
+      } else {
+        console.log(`🌐 浏览器已启动（${attempt.name}）`);
+      }
+      return browser;
+    } catch (e) {
+      const msg = `${attempt.name}: ${e && e.message ? e.message : e}`;
+      errors.push(msg);
+      console.warn(`⚠️ 浏览器启动失败（${attempt.name}）: ${String(msg).split("\n")[0]}`);
+    }
+  }
+
+  logStartupError(
+    "浏览器启动全部失败",
+    `executablePath=${executablePath}`,
+    `cwd=${process.cwd()}`,
+    `tmpdir=${os.tmpdir()}`,
+    ...errors
+  );
+  throw new Error(
+    `浏览器启动失败（已尝试 ${attempts.length} 种参数组合），详情见 ${STARTUP_LOG_PATH}`
+  );
+}
+
+/** 延时 ms 毫秒 */
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * 让浏览器窗口进入全屏（效果等同手动按 F11）。
+ * 注意：用 page.keyboard.press("F11") 无效 —— CDP 注入的按键只会送到页面 JS，
+ * 不会走浏览器快捷键；因此改用 CDP 的 Browser.setWindowBounds 窗口状态。
+ * @param {import("puppeteer-core").Page} page
+ */
+async function enterFullscreen(page) {
+  const session = await page.createCDPSession();
+  try {
+    const { windowId } = await session.send("Browser.getWindowForTarget");
+    await session.send("Browser.setWindowBounds", {
+      windowId,
+      bounds: { windowState: "fullscreen" },
+    });
+  } finally {
+    await session.detach().catch(() => {});
+  }
+}
+
 (async () => {
   console.log("🚀 启动中...");
   try {
@@ -355,18 +468,13 @@ const initScriptStr = `
     process.exit(1);
   }
 
-  const browser = await puppeteer.launch({
-    executablePath: exePath,
-    headless: false,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-infobars",
-      "--start-maximized",
-      "--disable-web-security", // 可选：绕过 CORS（仅开发用）
-      "--disable-features=EnableEphemeralFlashPermission", // 避免某些弹窗
-    ],
-  });
+  let browser;
+  try {
+    browser = await launchBrowser(exePath);
+  } catch (e) {
+    console.error(`❌ ${e.message}`);
+    process.exit(1); // 退出可释放静态资源端口，避免下次启动 EADDRINUSE
+  }
 
   const page = await browser.newPage();
   await page.setViewport(); // 或动态获取
@@ -379,5 +487,22 @@ const initScriptStr = `
   });
 
   console.log("✅ 成功！支持刷新重载。关闭窗口退出。");
+
+  // 启动后自动接管大屏：等 2s → 全屏（等效 F11）→ 再等 1s → 刷新（等效 F5）
+  const FULLSCREEN_DELAY_MS = 2000;
+  const RELOAD_DELAY_MS = 1000;
+  try {
+    await sleep(FULLSCREEN_DELAY_MS);
+    await enterFullscreen(page);
+    console.log(`🖥️  已进入全屏（${FULLSCREEN_DELAY_MS}ms 后，等效 F11）`);
+
+    await sleep(RELOAD_DELAY_MS);
+    // evaluateOnNewDocument 注册的初始化脚本在刷新后会重新执行，无需重复注入
+    await page.reload({ waitUntil: "domcontentloaded" });
+    console.log(`🔄  页面已刷新（${RELOAD_DELAY_MS}ms 后，等效 F5）`);
+  } catch (e) {
+    console.warn("⚠️ 自动全屏/刷新失败（不影响大屏正常显示）:", e.message);
+  }
+
   await new Promise(() => {});
 })();

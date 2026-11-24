@@ -1,5 +1,5 @@
 {
-  "openUrl": "http://192.168.3.40:8899/Online/ShowLayout/1",
+  "openUrl": "http://192.168.3.245:8899/Online/ShowLayout/1",
   "staticPort": 7070,
   "staticHost": "0.0.0.0"
 }
